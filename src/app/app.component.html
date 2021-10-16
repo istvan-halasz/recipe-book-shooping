@@ -1,10 +1,14 @@
-<app-header></app-header>
+<app-header (menuChanged)="onMenuChange($event)"></app-header>
 
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <app-recipes></app-recipes>
-      <app-shopping-list></app-shopping-list>      
+      <div *ngIf="selectedMenu==='recipes'; else shoppingList">
+        <app-recipes></app-recipes>
+      </div>
     </div>
+    <ng-template #shoppingList>
+      <app-shopping-list></app-shopping-list>
+    </ng-template>
   </div>
 </div>
