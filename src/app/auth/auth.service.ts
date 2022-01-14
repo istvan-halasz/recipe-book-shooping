@@ -18,7 +18,7 @@ export class AuthService {
   constructor(private httpClient: HttpClient) { }
 
   signUp(email: string, password: string) {
-    this.httpClient.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[' + this.API_KEY + ']',
+    return this.httpClient.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + this.API_KEY,
       {
         email: email,
         password: password,
