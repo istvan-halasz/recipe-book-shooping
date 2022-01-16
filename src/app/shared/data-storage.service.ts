@@ -15,38 +15,27 @@ export class DataStorageService {
 
   storeRecipes() {
     const recipes = this.recipeService.getRecipes();
-    this.authService.user.pipe(take(1)).subscribe(user => {
-      const token = user.token;
-
-      return this.httpClient.put(
-        this.url.concat('recipes.json'),
-        recipes,
-        {
-          params: new HttpParams().set('auth', token)
-        }
-      ).subscribe();
+    this.httpClient.put(this.url.concat('recipes.json'), recipes).subscribe(response => {
+      console.log(response);
     });
   }
 
   fetchRecipes() {
-    return this.authService.user.pipe(take(1),
-      exhaustMap(user => {
-        return this.httpClient.get<Recipe[]>(
-          this.url.concat('recipes.json'), {
-          params: new HttpParams().set('auth', user.token)
-        }
-        );
-      }),
-      map(recipes => {
-        return recipes.filter(r => r != null).map(recipe => {
-          if (recipe != null) {
-            return { ...recipe, ingredients: recipe.ingredients ? recipe.ingredients : [] };
-          }
-        });
-      }), tap(recipes => {
-        this.recipeService.setRecipes(recipes);
-      })
-    );
+
+    return this.httpClient
+      .get<Recipe[]>(
+        this.url.concat('recipes.json'),
+      ).pipe(
+        map(recipes => {
+          return recipes.filter(r => r != null).map(recipe => {
+            if (recipe != null) {
+              return { ...recipe, ingredients: recipe.ingredients ? recipe.ingredients : [] };
+            }
+          });
+        }), tap(recipes => {
+          this.recipeService.setRecipes(recipes);
+        })
+      );
     /*return this.httpClient.get<Recipe[]>(this.url.concat('recipes.json'))
       .pipe(map(recipes => {
         return recipes.filter(r => r != null).map(recipe => {
