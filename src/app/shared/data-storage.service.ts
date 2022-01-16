@@ -15,8 +15,16 @@ export class DataStorageService {
 
   storeRecipes() {
     const recipes = this.recipeService.getRecipes();
-    return this.httpClient.put(this.url.concat('recipes.json'), recipes).subscribe(response => {
-      console.log(response);
+    this.authService.user.pipe(take(1)).subscribe(user => {
+      const token = user.token;
+
+      return this.httpClient.put(
+        this.url.concat('recipes.json'),
+        recipes,
+        {
+          params: new HttpParams().set('auth', token)
+        }
+      ).subscribe();
     });
   }
 
