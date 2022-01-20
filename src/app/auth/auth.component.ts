@@ -42,12 +42,16 @@ export class AuthComponent implements OnInit {
     authenticationObservable.subscribe(response => {
       console.log(response);
       this.isLoading = false;
-      this.router.navigate(['/recipes'])
+      this.router.navigate(['/recipes']);
     }, errorMessage => {
       this.error = errorMessage;
       this.isLoading = false;
     });
 
     form.reset();
+  }
+
+  onHandleError() {
+    this.error = null;
   }
 }
