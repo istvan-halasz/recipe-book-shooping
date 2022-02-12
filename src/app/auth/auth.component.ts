@@ -24,7 +24,7 @@ export class AuthComponent implements OnInit {
       this.isLoading = authState.loading;
       this.error = authState.authError;
       if (this.error) {
-        
+
       }
     });
   }
@@ -41,9 +41,6 @@ export class AuthComponent implements OnInit {
     const email = form.value.email;
     const password = form.value.password;
 
-    let authenticationObservable: Observable<AuthResponseData>;
-
-    this.isLoading = true;
     if (this.isLoginMode) {
       //authenticationObservable = this.authenticationService.login(email, password);
       this.store.dispatch(new AuthActions.LoginStart(
@@ -53,7 +50,7 @@ export class AuthComponent implements OnInit {
         }));
 
     } else {
-      authenticationObservable = this.authenticationService.signUp(email, password);
+      this.store.dispatch(new AuthActions.SignupStart({ email: email, password: password }));
     }
 
     /*authenticationObservable.subscribe(response => {
