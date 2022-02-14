@@ -5,10 +5,19 @@ import { Actions, Effect, ofType } from "@ngrx/effects";
 import { of } from "rxjs";
 import { catchError, map, switchMap, tap } from "rxjs/operators";
 import { environment } from "src/environments/environment";
-import { AuthResponseData, AuthService } from "../auth.service";
+import { AuthService } from "../auth.service";
 import { User } from "../user.model";
 
 import * as AuthActions from './auth.actions';
+
+export interface AuthResponseData {
+  idToken: string,
+  email: string,
+  refreshToken: string,
+  expiresIn: string,
+  localId: string;
+  registered?: boolean;
+}
 
 const handleAuthentication = (expiresIn: number, email: string, userId: string, token: string) => {
   const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
@@ -43,6 +52,9 @@ const handleError = (errorRes: any) => {
 
 @Injectable()
 export class AuthEffects {
+
+  constructor(private actions$: Actions, private httpClient: HttpClient, private router: Router, private authService: AuthService) { }
+
   @Effect()
   authSignup = this.actions$.pipe(
     ofType(AuthActions.SIGNUP_START),
@@ -132,8 +144,5 @@ export class AuthEffects {
         return { type: 'DUMMY' };
       }
     })
-  );
-
-
-  constructor(private actions$: Actions, private httpClient: HttpClient, private router: Router, private authService: AuthService) { }
+  );  
 }
